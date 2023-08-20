@@ -1,5 +1,9 @@
 function Home() {
-  return <h1>angelo mendes vieira pinto</h1>;
+  var frases = [
+    "Curtos e objetivas ações em Python",
+    "Título, curta explicação e bloco de código",
+  ];
+  return <h1>${frases}</h1>;
 }
 
 export default Home;
