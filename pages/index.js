@@ -1,6 +1,6 @@
 function Home() {
   var frases = [
-    "Curtos e objetivas ações em Python",
+    "Curtos e objetivas ações em Python ou outras linguagens",
     "Título, curta explicação e bloco de código",
   ];
   return (
