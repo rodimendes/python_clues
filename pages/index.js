@@ -8,7 +8,8 @@ function Home() {
       {title[0]}
       {title[1]}
     </h1><h2>
-        How to get the current timestamp?
+        How to get the current timestamp?,
+        Indicadores de passagem,
       </h2></>
   );
 }
