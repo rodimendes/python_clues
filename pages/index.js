@@ -1,7 +1,7 @@
 function Home() {
   var title = [
     "Curtos e objetivas ações em Python ou outras linguagens",
-    "Título, curta explicação e bloco de código",
+    "Título, curta explicação e bloco de código - ",
   ];
   return (
     <><h1>
