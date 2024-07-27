@@ -1,7 +1,7 @@
 services:
   database:
-    image: "postgres:16.0-alpine3.18"
+    image: "postgres:16.0-alpine3.18" #alpine versions are based on Linux version made to occupy the smallest possible space.
     env_file:
       - ../.env.development
     ports:
-      - "5432:5432"
+      - "5432:5432" # - means a list in yaml. The numbers follow the logic "host:guest (container)" The guest port is 5432, defined by the container but, the other can be any number.
