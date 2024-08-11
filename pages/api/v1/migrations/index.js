@@ -3,41 +3,48 @@ import { join } from "node:path"; //To implementing on any operational system
 import database from "infra/database";
 
 export default async function migrations(request, response) {
-  const dbClient = await database.getNewClient();
-  const defaultMigrationsOptions = {
-    dbClient: dbClient,
-    dryRun: true,
-    dir: join("infra", "migrations"), // Poderia ter passado "infra/migrations", mas em ambientes Windows o caminho não funcionaria. Por isso foi importado o "join" do node.
-    direction: "up",
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
-
-  if (request.method === "GET") {
-    console.log("Entrou no GET");
-    const pendingMigrations = await migrationRunnerRodrigo(
-      defaultMigrationsOptions,
-    );
-    await dbClient.end();
-    response.status(200).json(pendingMigrations);
-    console.log("Saiu do GET");
+  const methodsAllowed = ["GET", "POST"];
+  if (!methodsAllowed.includes(request.method)) {
+    return response.status(405).json({
+      error: `Method "${request.method}" not allowed.`,
+    });
   }
 
-  if (request.method === "POST") {
-    console.log("Entrou no POST");
-    const migratedMigrations = await migrationRunnerRodrigo({
-      ...defaultMigrationsOptions,
-      dryRun: false,
-    });
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
+    const defaultMigrationsOptions = {
+      dbClient: dbClient,
+      dryRun: true,
+      dir: join("infra", "migrations"), // Poderia ter passado "infra/migrations", mas em ambientes Windows o caminho não funcionaria. Por isso foi importado o "join" do node.
+      direction: "up",
+      verbose: true,
+      migrationsTable: "pgmigrations",
+    };
 
-    await dbClient.end();
-
-    if (migratedMigrations.length > 0) {
-      response.status(201).json(migratedMigrations);
+    if (request.method === "GET") {
+      const pendingMigrations = await migrationRunnerRodrigo(
+        defaultMigrationsOptions,
+      );
+      response.status(200).json(pendingMigrations);
     }
 
-    response.status(200).json(migratedMigrations);
-    console.log("Saiu do POST");
+    if (request.method === "POST") {
+      const migratedMigrations = await migrationRunnerRodrigo({
+        ...defaultMigrationsOptions,
+        dryRun: false,
+      });
+
+      if (migratedMigrations.length > 0) {
+        response.status(201).json(migratedMigrations);
+      }
+
+      response.status(200).json(migratedMigrations);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    await dbClient.end();
   }
-  return response.status(405).end(); // 405 - method not allowed
 }
