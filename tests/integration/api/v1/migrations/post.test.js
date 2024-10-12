@@ -1,11 +1,9 @@
 // Integration test
-
-import database from "infra/database"; //importing to run a query to clean the database before the test.
 import orchestrator from "tests/orchestrator";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await database.query("drop schema public cascade; create schema public");
+  await orchestrator.clearDatabase();
 });
 
 describe("POST /api/v1/migrations", () => {
