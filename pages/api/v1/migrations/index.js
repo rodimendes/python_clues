@@ -1,5 +1,5 @@
 import migrationRunnerRodrigo from "node-pg-migrate";
-import { join } from "node:path"; //To implementing on any operational system
+import { resolve } from "node:path"; //To implementing on any operational system
 import database from "infra/database";
 
 export default async function migrations(request, response) {
@@ -16,7 +16,7 @@ export default async function migrations(request, response) {
     const defaultMigrationsOptions = {
       dbClient: dbClient,
       dryRun: true,
-      dir: join("infra", "migrations"), // Poderia ter passado "infra/migrations", mas em ambientes Windows o caminho não funcionaria. Por isso foi importado o "join" do node.
+      dir: resolve("infra", "migrations"), // Poderia ter passado "infra/migrations", mas em ambientes Windows o caminho não funcionaria. Por isso foi importado o "join" do node.
       direction: "up",
       verbose: true,
       migrationsTable: "pgmigrations",
