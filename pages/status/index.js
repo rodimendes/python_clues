@@ -39,47 +39,23 @@ function UpdatedAt() {
 }
 
 function DatabaseData() {
-  const databaseData = useSWR("/api/v1/status", fetchAPI, {
+  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
     refreshInterval: 2000,
   });
 
-  return (
-    <>
-      <div>
-        Max connections:{" "}
-        {databaseData.data.dependencies.database.max_connections}
-      </div>
-      <div>
-        Opened connections:{" "}
-        {databaseData.data.dependencies.database.opened_connections}
-      </div>
-      <div>
-        Database version: {databaseData.data.dependencies.database.version}
-      </div>
-    </>
-  );
+  let databaseInformation = "Carregando...";
+
+  if (!isLoading && data) {
+    databaseInformation = (
+      <>
+        <div>Max connections: {data.dependencies.database.max_connections}</div>
+        <div>
+          Opened connections: {data.dependencies.database.opened_connections}
+        </div>
+        <div>Database version: {data.dependencies.database.version}</div>
+      </>
+    );
+  }
+
+  return <div>{databaseInformation}</div>;
 }
-
-/* function OpenedConnections() {
-  const openedConnections = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
-  });
-
-  return (
-    <div>
-      Opened connections:
-      {openedConnections.data.dependencies.database.opened_connections}
-    </div>
-  );
-}
-
-function DatabaseVersion() {
-  const db_version = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
-  });
-
-  return (
-    <div>Database version: {db_version.data.dependencies.database.version}</div>
-  );
-}
- */
